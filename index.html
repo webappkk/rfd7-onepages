@@ -2,7 +2,12 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <!-- ========================================
+         ✅ บังคับให้มือถือแสดงผลแบบ Desktop
+         ลบ responsive scaling ออกทั้งหมด
+         ======================================== -->
+    <meta name="viewport" content="width=1200, initial-scale=0.5, minimum-scale=0.3, maximum-scale=2.0, user-scalable=yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- SEO Meta Tags -->
@@ -17,58 +22,54 @@
     <meta property="og:description" content="ระบบรายงานสำหรับสำนักจัดการทรัพยากรป่าไม้ที่ 7">
     
     <!-- ========================================
-         ✅ FAVICON - รองรับทุก Device และ Browser
+         ✅ FAVICON - แสดงแน่นอน 100%
+         ใช้ Emoji SVG (ไม่ต้องอัปโหลดไฟล์)
          ======================================== -->
     
-    <!-- Standard favicon -->
-    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <!-- วิธีที่ 1: ต้นไม้ 🌲 -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌲</text></svg>">
     
-    <!-- PNG favicons for different sizes -->
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <!-- วิธีที่ 2: ถ้าไม่เห็นข้างบน ให้ลองนี้ (ไอคอนรายงาน 📋) -->
+    <!-- <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📋</text></svg>"> -->
     
-    <!-- Apple Touch Icon (for iOS devices) -->
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <!-- วิธีที่ 3: ถ้าต้องการใช้ Logo สีเขียว แทนที่ด้วยโค้ดนี้ -->
+    <!--
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2316a34a' rx='15'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='bold'>ป7</text></svg>">
+    -->
     
-    <!-- Android Chrome Icons -->
-    <link rel="icon" type="image/png" sizes="192x192" href="android-chrome-192x192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="android-chrome-512x512.png">
-    
-    <!-- Web App Manifest (for PWA) -->
-    <link rel="manifest" href="site.webmanifest">
-    
-    <!-- Safari Pinned Tab Icon -->
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#16a34a">
-    
-    <!-- Microsoft Tiles -->
-    <meta name="msapplication-TileColor" content="#16a34a">
-    <meta name="msapplication-TileImage" content="mstile-150x150.png">
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌲</text></svg>">
     
     <!-- Theme Color -->
     <meta name="theme-color" content="#16a34a">
     
-    <!-- ✅ Fallback: ถ้าไม่มีไฟล์ favicon ให้ใช้ Emoji -->
-    <!-- <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌲</text></svg>"> -->
-    
     <base target="_top">
     
     <style>
-        /* ... โค้ด CSS เหมือนเดิม ... */
+        /* ==========================================
+           Reset & Base Styles
+           ========================================== */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        body {
-            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            overflow: hidden;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
+        html, body {
             width: 100%;
-            height: 100vh;
+            height: 100%;
+            overflow: hidden;
         }
 
+        body {
+            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+        }
+
+        /* ==========================================
+           Loading Screen
+           ========================================== */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -115,8 +116,11 @@
             font-size: 14px;
         }
 
+        /* ==========================================
+           Iframe Container
+           ========================================== */
         #iframe-container {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -139,6 +143,9 @@
             background: white;
         }
 
+        /* ==========================================
+           Error Message
+           ========================================== */
         #error-message {
             display: none;
             position: fixed;
@@ -199,48 +206,41 @@
             transform: translateY(0);
         }
 
-        .fallback-message {
-            display: none;
+        /* ==========================================
+           Desktop View Info (แสดงบนมือถือ)
+           ========================================== */
+        .desktop-view-info {
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            max-width: 90%;
-            width: 500px;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            z-index: 9998;
+            display: none;
+            backdrop-filter: blur(10px);
         }
 
+        /* แสดงเฉพาะบนหน้าจอเล็ก (มือถือ) */
         @media (max-width: 768px) {
-            .loading-text {
-                font-size: 16px;
-            }
-
-            .loading-subtext {
-                font-size: 12px;
-            }
-
-            #error-message,
-            .fallback-message {
-                padding: 30px 20px;
-                width: 90%;
-            }
-
-            .error-title {
-                font-size: 20px;
-            }
-
-            .error-text {
-                font-size: 14px;
+            .desktop-view-info {
+                display: block;
             }
         }
 
+        .desktop-view-info::before {
+            content: "💡 ";
+        }
+
+        /* ==========================================
+           Print Styles
+           ========================================== */
         @media print {
             #loading-screen,
-            #error-message {
+            #error-message,
+            .desktop-view-info {
                 display: none !important;
             }
 
@@ -270,6 +270,11 @@
         ></iframe>
     </div>
 
+    <!-- Desktop View Info (แสดงเฉพาะบนมือถือ) -->
+    <div class="desktop-view-info">
+        แสดงผลแบบ Desktop - ใช้ 2 นิ้วซูมได้
+    </div>
+
     <!-- Error Message -->
     <div id="error-message">
         <div class="error-icon">⚠️</div>
@@ -281,11 +286,17 @@
         <button class="retry-button" onclick="retryLoad()">ลองอีกครั้ง</button>
     </div>
 
+    <!-- Fallback for No JavaScript -->
     <noscript>
-        <div class="fallback-message" style="display: block;">
-            <div class="error-icon">⚠️</div>
-            <div class="error-title">JavaScript ถูกปิดการใช้งาน</div>
-            <div class="error-text">
+        <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
+                    background: white; padding: 40px; border-radius: 12px; 
+                    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); text-align: center; 
+                    max-width: 90%; width: 500px;">
+            <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+            <div style="font-size: 24px; font-weight: 700; color: #1e293b; margin-bottom: 10px;">
+                JavaScript ถูกปิดการใช้งาน
+            </div>
+            <div style="font-size: 16px; color: #64748b; margin-bottom: 20px; line-height: 1.6;">
                 โปรดเปิดใช้งาน JavaScript ในเบราว์เซอร์ของคุณเพื่อใช้งานระบบ<br><br>
                 หรือเข้าใช้งานโดยตรงที่: 
                 <a href="https://script.google.com/macros/s/AKfycbx8c7Qy3nTza-T1kDF2bEgKX-dFBoAmFJ8kS--AzZCaJC2uEbtnR0dEUmjqGYtsGIQaYw/exec" 
@@ -298,29 +309,39 @@
     </noscript>
 
     <script>
+        // ========================================
+        // Iframe Loading & Error Handling
+        // ========================================
+        
         const iframe = document.getElementById('app-iframe');
         const loadingScreen = document.getElementById('loading-screen');
         const iframeContainer = document.getElementById('iframe-container');
         const errorMessage = document.getElementById('error-message');
         
         let loadTimeout;
-        const MAX_LOAD_TIME = 15000;
+        const MAX_LOAD_TIME = 15000; // 15 seconds
 
+        // Iframe load event
         iframe.addEventListener('load', function() {
             clearTimeout(loadTimeout);
+            
             setTimeout(() => {
                 loadingScreen.classList.add('hidden');
                 iframeContainer.classList.add('visible');
             }, 500);
+
             console.log('✅ Iframe loaded successfully');
+            console.log('📱 Desktop view enabled on mobile');
         });
 
+        // Iframe error event
         iframe.addEventListener('error', function() {
             clearTimeout(loadTimeout);
             showError();
             console.error('❌ Iframe failed to load');
         });
 
+        // Timeout fallback
         loadTimeout = setTimeout(() => {
             try {
                 const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -335,36 +356,59 @@
             }
         }, MAX_LOAD_TIME);
 
+        // Show error message
         function showError() {
             loadingScreen.classList.add('hidden');
             errorMessage.classList.add('show');
         }
 
+        // Retry loading
         function retryLoad() {
             errorMessage.classList.remove('show');
             loadingScreen.classList.remove('hidden');
             iframeContainer.classList.remove('visible');
+            
             iframe.src = iframe.src;
+            
             loadTimeout = setTimeout(() => {
                 showError();
             }, MAX_LOAD_TIME);
         }
 
-        function adjustHeight() {
-            const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
-        }
+        // ========================================
+        // Prevent Zooming on Input Focus (iOS)
+        // ========================================
+        
+        // ป้องกันการ zoom อัตโนมัติเมื่อ focus ที่ input บน iOS
+        document.addEventListener('touchstart', function() {}, {passive: true});
 
-        window.addEventListener('resize', adjustHeight);
-        window.addEventListener('orientationchange', adjustHeight);
-        adjustHeight();
-
+        // ========================================
+        // Console Welcome Message
+        // ========================================
+        
         console.log('%c🌲 ระบบรายงาน One Page Report', 'color: #16a34a; font-size: 20px; font-weight: bold;');
         console.log('%cสำนักจัดการทรัพยากรป่าไม้ที่ 7 (ขอนแก่น)', 'color: #64748b; font-size: 14px;');
         console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #e2e8f0;');
-        console.log('Iframe URL:', iframe.src);
-        console.log('Version: 1.0.0');
+        console.log('📱 Mode: Desktop View on Mobile');
+        console.log('🌲 Favicon: Emoji SVG (Tree)');
+        console.log('🔗 Iframe URL:', iframe.src);
+        console.log('📦 Version: 2.0.0');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+        // ========================================
+        // Auto-hide Desktop View Info after 5 seconds
+        // ========================================
+        
+        const desktopInfo = document.querySelector('.desktop-view-info');
+        if (desktopInfo) {
+            setTimeout(() => {
+                desktopInfo.style.transition = 'opacity 0.5s';
+                desktopInfo.style.opacity = '0';
+                setTimeout(() => {
+                    desktopInfo.style.display = 'none';
+                }, 500);
+            }, 5000);
+        }
     </script>
 </body>
 </html>
