@@ -2,10 +2,405 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ระบบรายงาน One Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    
+    <!-- SEO Meta Tags -->
+    <title>ระบบรายงาน One Page - สำนักจัดการทรัพยากรป่าไม้ที่ 7</title>
+    <meta name="description" content="ระบบรายงาน One Page Report สำหรับสำนักจัดการทรัพยากรป่าไม้ที่ 7 (ขอนแก่น)">
+    <meta name="keywords" content="One Page Report, รายงาน, ป่าไม้, ทรัพยากรป่าไม้">
+    <meta name="author" content="สำนักจัดการทรัพยากรป่าไม้ที่ 7">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="ระบบรายงาน One Page">
+    <meta property="og:description" content="ระบบรายงานสำหรับสำนักจัดการทรัพยากรป่าไม้ที่ 7">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAA7AAAAOwBeShxvQAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAIASURBVFiFzZe/S1VRHMe/5z73nnvvvU+fmlqWRAVBQUNDLdHQ0NBgS9AQ/QO1tNTSUktDLU1BNLT0B7S0RFBEUESD9EPNSkwzX/e+e+65nzO4hD7ve89zCXrgM5zv+X6+n+/3nHMuIIQQQgghhBBCCCH/G/wvC5dlGYQQMAYopZAkCZIkRVWV6jiOLMuyqqpqJcsyzLmAEALnHJxziKKIiCiIoigiIiKKIiKiJElElmWRaZoiTVMRxzERURAEhHOOKIqIs4bneYhSCsdxoOs6NE2Druuw6zpsW4dla2rads2u1x3btqFpGnRdh+M4iKII0+n0r0F938dsNgPnHLIsQ5IkmKZp6Lpum6Zpm6ZpRVFky7Is0zRN0zAMwzRN0zRNU5ZlWZIkSZblGkophCiKkKYpkiRBEARgjCHLsp/OuZBSCiklGOMghIBzDiHEb0VRhKIoWFEUvKpqXlU1r+saj8djPp1O+Xg85v1+n3e7Xd7tdjkADgCcc1BVFaZpQlVVaJoGXdeh6zpsuxbk+NZVGg2Pt2rtMM/WC9M0IcsyZFkGpRTTJEmazWaYzWYIwxBhGCIMQ0zH45rH4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8Ho/H4/F4PB6Px+PxeDwej8fj8Xg8/gN+ATnvJH7U8kQUAAAAAElFTkSuQmCC">
+    
+    <!-- Base URL for Google Apps Script -->
     <base target="_top">
-   </head>
-   <body>
-      <iframe style="position: absolute;top: 0;left: 0;width: 100%;height: 100%;border: 0;" src="https://script.google.com/macros/s/AKfycbxdOkA--_MJaGpjd1DCegnmY_xW3-lJMHqoOP5h1Qk0ObxMce75B5Sfs3Hk_vlua7tXIA/exec"></iframe>
-   </body>
+    
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            width: 100%;
+            height: 100vh;
+        }
+
+        /* Loading Screen */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease-out;
+        }
+
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .loading-subtext {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        /* Iframe Container */
+        #iframe-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+        }
+
+        #iframe-container.visible {
+            opacity: 1;
+        }
+
+        #app-iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+            background: white;
+        }
+
+        /* Error Message */
+        #error-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+            z-index: 10000;
+        }
+
+        #error-message.show {
+            display: block;
+        }
+
+        .error-icon {
+            font-size: 48px;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .error-text {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .retry-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .retry-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .retry-button:active {
+            transform: translateY(0);
+        }
+
+        /* Fallback Message (for browsers that don't support iframe) */
+        .fallback-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 90%;
+            width: 500px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .loading-text {
+                font-size: 16px;
+            }
+
+            .loading-subtext {
+                font-size: 12px;
+            }
+
+            #error-message,
+            .fallback-message {
+                padding: 30px 20px;
+                width: 90%;
+            }
+
+            .error-title {
+                font-size: 20px;
+            }
+
+            .error-text {
+                font-size: 14px;
+            }
+        }
+
+        /* Print Styles */
+        @media print {
+            #loading-screen,
+            #error-message {
+                display: none !important;
+            }
+
+            #iframe-container {
+                opacity: 1 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader"></div>
+        <div class="loading-text">กำลังโหลดระบบ...</div>
+        <div class="loading-subtext">โปรดรอสักครู่</div>
+    </div>
+
+    <!-- Iframe Container -->
+    <div id="iframe-container">
+        <iframe 
+            id="app-iframe"
+            src="https://script.google.com/macros/s/AKfycbxdOkA--_MJaGpjd1DCegnmY_xW3-lJMHqoOP5h1Qk0ObxMce75B5Sfs3Hk_vlua7tXIA/exec"
+            title="ระบบรายงาน One Page"
+            allow="geolocation; microphone; camera"
+            sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-downloads"
+            loading="eager"
+        ></iframe>
+    </div>
+
+    <!-- Error Message -->
+    <div id="error-message">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">ไม่สามารถโหลดระบบได้</div>
+        <div class="error-text">
+            เกิดข้อผิดพลาดในการเชื่อมต่อกับระบบ<br>
+            โปรดตรวจสอบการเชื่อมต่ออินเทอร์เน็ตของคุณ
+        </div>
+        <button class="retry-button" onclick="retryLoad()">ลองอีกครั้ง</button>
+    </div>
+
+    <!-- Fallback Message (for unsupported browsers) -->
+    <noscript>
+        <div class="fallback-message" style="display: block;">
+            <div class="error-icon">⚠️</div>
+            <div class="error-title">JavaScript ถูกปิดการใช้งาน</div>
+            <div class="error-text">
+                โปรดเปิดใช้งาน JavaScript ในเบราว์เซอร์ของคุณเพื่อใช้งานระบบ<br><br>
+                หรือเข้าใช้งานโดยตรงที่: 
+                <a href="https://script.google.com/macros/s/AKfycbx8c7Qy3nTza-T1kDF2bEgKX-dFBoAmFJ8kS--AzZCaJC2uEbtnR0dEUmjqGYtsGIQaYw/exec" 
+                   target="_blank"
+                   style="color: #667eea; text-decoration: underline;">
+                    คลิกที่นี่
+                </a>
+            </div>
+        </div>
+    </noscript>
+
+    <script>
+        // ========================================
+        // Iframe Loading & Error Handling
+        // ========================================
+        
+        const iframe = document.getElementById('app-iframe');
+        const loadingScreen = document.getElementById('loading-screen');
+        const iframeContainer = document.getElementById('iframe-container');
+        const errorMessage = document.getElementById('error-message');
+        
+        let loadTimeout;
+        const MAX_LOAD_TIME = 15000; // 15 seconds timeout
+
+        // Iframe load event
+        iframe.addEventListener('load', function() {
+            clearTimeout(loadTimeout);
+            
+            // Hide loading, show iframe
+            setTimeout(() => {
+                loadingScreen.classList.add('hidden');
+                iframeContainer.classList.add('visible');
+            }, 500);
+
+            console.log('✅ Iframe loaded successfully');
+        });
+
+        // Iframe error event
+        iframe.addEventListener('error', function() {
+            clearTimeout(loadTimeout);
+            showError();
+            console.error('❌ Iframe failed to load');
+        });
+
+        // Timeout fallback
+        loadTimeout = setTimeout(() => {
+            // Check if iframe actually loaded
+            try {
+                // Try to access iframe content (will throw error if not loaded)
+                const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                if (!iframeDoc || iframeDoc.readyState !== 'complete') {
+                    throw new Error('Timeout');
+                }
+                
+                // If we get here, iframe loaded but slowly
+                loadingScreen.classList.add('hidden');
+                iframeContainer.classList.add('visible');
+            } catch (e) {
+                // Iframe didn't load within timeout
+                showError();
+                console.error('⏱️ Iframe load timeout');
+            }
+        }, MAX_LOAD_TIME);
+
+        // Show error message
+        function showError() {
+            loadingScreen.classList.add('hidden');
+            errorMessage.classList.add('show');
+        }
+
+        // Retry loading
+        function retryLoad() {
+            errorMessage.classList.remove('show');
+            loadingScreen.classList.remove('hidden');
+            iframeContainer.classList.remove('visible');
+            
+            // Reload iframe
+            iframe.src = iframe.src;
+            
+            // Reset timeout
+            loadTimeout = setTimeout(() => {
+                showError();
+            }, MAX_LOAD_TIME);
+        }
+
+        // ========================================
+        // Responsive Height Adjustment (for mobile)
+        // ========================================
+        
+        function adjustHeight() {
+            // Fix for mobile browsers (address bar issue)
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        window.addEventListener('resize', adjustHeight);
+        window.addEventListener('orientationchange', adjustHeight);
+        adjustHeight();
+
+        // ========================================
+        // Analytics (Optional)
+        // ========================================
+        
+        // Uncomment if you want to track page views
+        /*
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'page_view', {
+                page_title: 'One Page Report System',
+                page_location: window.location.href,
+                page_path: window.location.pathname
+            });
+        }
+        */
+
+        // ========================================
+        // Service Worker (Optional - for offline support)
+        // ========================================
+        
+        /*
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('✅ Service Worker registered'))
+                    .catch(err => console.error('❌ Service Worker registration failed:', err));
+            });
+        }
+        */
+
+        // ========================================
+        // Console Welcome Message
+        // ========================================
+        
+        console.log('%c🌲 ระบบรายงาน One Page Report', 'color: #16a34a; font-size: 20px; font-weight: bold;');
+        console.log('%cสำนักจัดการทรัพยากรป่าไม้ที่ 7 (ขอนแก่น)', 'color: #64748b; font-size: 14px;');
+        console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #e2e8f0;');
+        console.log('Iframe URL:', iframe.src);
+        console.log('Version: 1.0.0');
+        console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+    </script>
+</body>
+</html>
