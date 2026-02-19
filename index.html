@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     
     <!-- ========================================
-         ✅ บังคับให้มือถือแสดงผลแบบ Desktop
-         ลบ responsive scaling ออกทั้งหมด
+         ✅ บังคับให้มือถือแสดงผลแบบ Desktop 100%
          ======================================== -->
-    <meta name="viewport" content="width=1200, initial-scale=0.5, minimum-scale=0.3, maximum-scale=2.0, user-scalable=yes">
+    <meta name="viewport" content="width=1280, initial-scale=0.4, minimum-scale=0.2, maximum-scale=3.0, user-scalable=yes">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     
     <!-- SEO Meta Tags -->
@@ -16,31 +15,16 @@
     <meta name="keywords" content="One Page Report, รายงาน, ป่าไม้, ทรัพยากรป่าไม้">
     <meta name="author" content="สำนักจัดการทรัพยากรป่าไม้ที่ 7">
     
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="ระบบรายงาน One Page">
     <meta property="og:description" content="ระบบรายงานสำหรับสำนักจัดการทรัพยากรป่าไม้ที่ 7">
     
     <!-- ========================================
-         ✅ FAVICON - แสดงแน่นอน 100%
-         ใช้ Emoji SVG (ไม่ต้องอัปโหลดไฟล์)
+         ✅ FAVICON - ต้นไม้ 🌲
          ======================================== -->
-    
-    <!-- วิธีที่ 1: ต้นไม้ 🌲 -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌲</text></svg>">
-    
-    <!-- วิธีที่ 2: ถ้าไม่เห็นข้างบน ให้ลองนี้ (ไอคอนรายงาน 📋) -->
-    <!-- <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>📋</text></svg>"> -->
-    
-    <!-- วิธีที่ 3: ถ้าต้องการใช้ Logo สีเขียว แทนที่ด้วยโค้ดนี้ -->
-    <!--
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2316a34a' rx='15'/><text x='50' y='70' font-size='60' text-anchor='middle' fill='white' font-family='Arial, sans-serif' font-weight='bold'>ป7</text></svg>">
-    -->
-    
-    <!-- Apple Touch Icon -->
     <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>🌲</text></svg>">
-    
-    <!-- Theme Color -->
     <meta name="theme-color" content="#16a34a">
     
     <base target="_top">
@@ -53,18 +37,21 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         html, body {
             width: 100%;
             height: 100%;
             overflow: hidden;
+            position: fixed;
+            overscroll-behavior: none;
         }
 
         body {
             font-family: 'Sarabun', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            position: relative;
+            touch-action: manipulation;
         }
 
         /* ==========================================
@@ -144,6 +131,102 @@
         }
 
         /* ==========================================
+           Zoom Controls (แสดงเฉพาะบนมือถือ)
+           ========================================== */
+        #zoom-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 9998;
+        }
+
+        @media (max-width: 768px) {
+            #zoom-controls {
+                display: flex;
+            }
+        }
+
+        .zoom-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(22, 163, 74, 0.95);
+            color: white;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            backdrop-filter: blur(10px);
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .zoom-btn:active {
+            transform: scale(0.9);
+            background: rgba(22, 163, 74, 1);
+        }
+
+        .zoom-btn:hover {
+            background: rgba(22, 163, 74, 1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .zoom-reset {
+            background: rgba(102, 126, 234, 0.95);
+            font-size: 14px;
+        }
+
+        .zoom-reset:active,
+        .zoom-reset:hover {
+            background: rgba(102, 126, 234, 1);
+        }
+
+        /* ==========================================
+           Mobile Info Badge
+           ========================================== */
+        #mobile-info {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(22, 163, 74, 0.95);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            z-index: 9998;
+            display: none;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        @media (max-width: 768px) {
+            #mobile-info {
+                display: block;
+            }
+        }
+
+        #mobile-info.fade-out {
+            animation: fadeOut 0.5s ease-out 4.5s forwards;
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(-50%) translateY(-10px);
+            }
+        }
+
+        /* ==========================================
            Error Message
            ========================================== */
         #error-message {
@@ -207,31 +290,29 @@
         }
 
         /* ==========================================
-           Desktop View Info (แสดงบนมือถือ)
+           Responsive Adjustments
            ========================================== */
-        .desktop-view-info {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-size: 12px;
-            z-index: 9998;
-            display: none;
-            backdrop-filter: blur(10px);
-        }
-
-        /* แสดงเฉพาะบนหน้าจอเล็ก (มือถือ) */
         @media (max-width: 768px) {
-            .desktop-view-info {
-                display: block;
+            .loading-text {
+                font-size: 16px;
             }
-        }
 
-        .desktop-view-info::before {
-            content: "💡 ";
+            .loading-subtext {
+                font-size: 12px;
+            }
+
+            #error-message {
+                padding: 30px 20px;
+                width: 90%;
+            }
+
+            .error-title {
+                font-size: 20px;
+            }
+
+            .error-text {
+                font-size: 14px;
+            }
         }
 
         /* ==========================================
@@ -240,7 +321,8 @@
         @media print {
             #loading-screen,
             #error-message,
-            .desktop-view-info {
+            #zoom-controls,
+            #mobile-info {
                 display: none !important;
             }
 
@@ -270,9 +352,16 @@
         ></iframe>
     </div>
 
-    <!-- Desktop View Info (แสดงเฉพาะบนมือถือ) -->
-    <div class="desktop-view-info">
-        แสดงผลแบบ Desktop - ใช้ 2 นิ้วซูมได้
+    <!-- Mobile Info Badge (แสดงเฉพาะบนมือถือ) -->
+    <div id="mobile-info" class="fade-out">
+        📱 โหมด Desktop | ใช้ปุ่มซูมด้านล่างขวา
+    </div>
+
+    <!-- Zoom Controls (แสดงเฉพาะบนมือถือ) -->
+    <div id="zoom-controls">
+        <button class="zoom-btn" id="zoom-in" aria-label="ซูมเข้า">+</button>
+        <button class="zoom-btn zoom-reset" id="zoom-reset" aria-label="รีเซ็ต">⟲</button>
+        <button class="zoom-btn" id="zoom-out" aria-label="ซูมออก">−</button>
     </div>
 
     <!-- Error Message -->
@@ -297,7 +386,7 @@
                 JavaScript ถูกปิดการใช้งาน
             </div>
             <div style="font-size: 16px; color: #64748b; margin-bottom: 20px; line-height: 1.6;">
-                โปรดเปิดใช้งาน JavaScript ในเบราว์เซอร์ของคุณเพื่อใช้งานระบบ<br><br>
+                โปรดเปิดใช้งาน JavaScript ในเบราว์เซอร์ของคุณ<br><br>
                 หรือเข้าใช้งานโดยตรงที่: 
                 <a href="https://script.google.com/macros/s/AKfycbx8c7Qy3nTza-T1kDF2bEgKX-dFBoAmFJ8kS--AzZCaJC2uEbtnR0dEUmjqGYtsGIQaYw/exec" 
                    target="_blank"
@@ -319,29 +408,23 @@
         const errorMessage = document.getElementById('error-message');
         
         let loadTimeout;
-        const MAX_LOAD_TIME = 15000; // 15 seconds
+        const MAX_LOAD_TIME = 15000;
 
-        // Iframe load event
         iframe.addEventListener('load', function() {
             clearTimeout(loadTimeout);
-            
             setTimeout(() => {
                 loadingScreen.classList.add('hidden');
                 iframeContainer.classList.add('visible');
             }, 500);
-
-            console.log('✅ Iframe loaded successfully');
-            console.log('📱 Desktop view enabled on mobile');
+            console.log('✅ Iframe loaded - Desktop mode on mobile');
         });
 
-        // Iframe error event
         iframe.addEventListener('error', function() {
             clearTimeout(loadTimeout);
             showError();
             console.error('❌ Iframe failed to load');
         });
 
-        // Timeout fallback
         loadTimeout = setTimeout(() => {
             try {
                 const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
@@ -356,30 +439,75 @@
             }
         }, MAX_LOAD_TIME);
 
-        // Show error message
         function showError() {
             loadingScreen.classList.add('hidden');
             errorMessage.classList.add('show');
         }
 
-        // Retry loading
         function retryLoad() {
             errorMessage.classList.remove('show');
             loadingScreen.classList.remove('hidden');
             iframeContainer.classList.remove('visible');
-            
             iframe.src = iframe.src;
-            
-            loadTimeout = setTimeout(() => {
-                showError();
-            }, MAX_LOAD_TIME);
+            loadTimeout = setTimeout(showError, MAX_LOAD_TIME);
         }
 
         // ========================================
-        // Prevent Zooming on Input Focus (iOS)
+        // Zoom Controls for Mobile
         // ========================================
         
-        // ป้องกันการ zoom อัตโนมัติเมื่อ focus ที่ input บน iOS
+        let currentScale = 0.4; // ค่าเริ่มต้นตาม viewport initial-scale
+        const minScale = 0.2;
+        const maxScale = 3.0;
+        const scaleStep = 0.1;
+
+        const zoomInBtn = document.getElementById('zoom-in');
+        const zoomOutBtn = document.getElementById('zoom-out');
+        const zoomResetBtn = document.getElementById('zoom-reset');
+
+        function updateZoom(newScale) {
+            if (newScale < minScale || newScale > maxScale) return;
+            
+            currentScale = newScale;
+            const viewport = document.querySelector('meta[name="viewport"]');
+            viewport.setAttribute('content', 
+                `width=1280, initial-scale=${currentScale}, minimum-scale=${minScale}, maximum-scale=${maxScale}, user-scalable=yes`
+            );
+            
+            console.log('🔍 Zoom:', Math.round(currentScale * 100) + '%');
+        }
+
+        if (zoomInBtn) {
+            zoomInBtn.addEventListener('click', () => {
+                updateZoom(Math.min(currentScale + scaleStep, maxScale));
+            });
+        }
+
+        if (zoomOutBtn) {
+            zoomOutBtn.addEventListener('click', () => {
+                updateZoom(Math.max(currentScale - scaleStep, minScale));
+            });
+        }
+
+        if (zoomResetBtn) {
+            zoomResetBtn.addEventListener('click', () => {
+                updateZoom(0.4); // รีเซ็ตเป็นค่าเริ่มต้น
+            });
+        }
+
+        // ========================================
+        // Prevent Default Zoom Gestures (Optional)
+        // ========================================
+        
+        // ป้องกันการซูมด้วย pinch gesture (ถ้าต้องการให้ใช้ปุ่มอย่างเดียว)
+        // document.addEventListener('gesturestart', function(e) {
+        //     e.preventDefault();
+        // });
+
+        // ========================================
+        // Prevent Auto-zoom on Input Focus (iOS)
+        // ========================================
+        
         document.addEventListener('touchstart', function() {}, {passive: true});
 
         // ========================================
@@ -389,26 +517,12 @@
         console.log('%c🌲 ระบบรายงาน One Page Report', 'color: #16a34a; font-size: 20px; font-weight: bold;');
         console.log('%cสำนักจัดการทรัพยากรป่าไม้ที่ 7 (ขอนแก่น)', 'color: #64748b; font-size: 14px;');
         console.log('%c━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', 'color: #e2e8f0;');
-        console.log('📱 Mode: Desktop View on Mobile');
-        console.log('🌲 Favicon: Emoji SVG (Tree)');
+        console.log('📱 Mode: Full Desktop View on Mobile');
+        console.log('🔍 Zoom Controls: Enabled');
+        console.log('🌲 Favicon: Tree Emoji');
         console.log('🔗 Iframe URL:', iframe.src);
-        console.log('📦 Version: 2.0.0');
+        console.log('📦 Version: 3.0.0');
         console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
-
-        // ========================================
-        // Auto-hide Desktop View Info after 5 seconds
-        // ========================================
-        
-        const desktopInfo = document.querySelector('.desktop-view-info');
-        if (desktopInfo) {
-            setTimeout(() => {
-                desktopInfo.style.transition = 'opacity 0.5s';
-                desktopInfo.style.opacity = '0';
-                setTimeout(() => {
-                    desktopInfo.style.display = 'none';
-                }, 500);
-            }, 5000);
-        }
     </script>
 </body>
 </html>
